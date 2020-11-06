@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="lt">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Patiekalo paieška</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link href="public/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2>Patiekalo paieška</h2>
+        <input type="text" id="paieska" class="paieska" placeholder="Įveskite patiekalo pavadinimą angliškai" autofocus required>
+
+        <button class="mygtukas" onclick="kvietimas()">Ieškoti</button>
+
+        <div id="rezultatas"></div>
+    </div>
+<script>
+
+    let rezultatas = document.getElementById("rezultatas");
+
+    function kvietimas() {
+
+        var proxyUrl = 'https://cors-anywhere.herokuapp.com/',
+            targetUrl = 'http://www.recipepuppy.com/api/?q=';
+        fetch(proxyUrl + targetUrl+document.getElementById("paieska").value)
+            .then(blob => blob.json())
+            .then(data => {
+
+                if (data.results.length == 0){
+                    rezultatas.innerHTML = "<div class=\"klaida\">Klaida:  Patikslinkite žodį</div>";
+                }else{
+                    rezultatas.innerHTML = "<ol>"
+
+                    for (let i =0; i <data.results.length;i++){
+                        rezultatas.innerHTML += "<li><a href='"+data.results[i].thumbnail+"' target='_blank'><img src='"+data.results[i].thumbnail+"'></a> <i>"+data.results[i].title+"</i>, <b>ingredients:</b> "+data.results[i].ingredients+"</li>";
+                    }
+                    
+                    rezultatas.innerHTML += "</ol>";
+                }
+            })
+            .catch(e => {
+                alert("Klaida: "+e);
+            });
+    }
+
+</script>
+</body>
+</html>
